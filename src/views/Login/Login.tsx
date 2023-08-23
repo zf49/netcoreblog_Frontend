@@ -12,19 +12,38 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import { useNavigate } from 'react-router';
+import axios from 'axios'
 
 
 const defaultTheme = createTheme();
 
 export default function Login() {
+
+
+  let navigate = useNavigate()
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get('email'),
+      userName: data.get('userName'),
       password: data.get('password'),
     });
+
+    let userName = data.get('userName');
+    let password = data.get('password');
+
+
+    axios.post('http://localhost:5124/api/Login',{
+      'userName': userName,
+      'password': password,
+    }).then(res=>{
+      console.log(res.data)
+    })
+    
+
+
   };
 
   return (
@@ -66,10 +85,10 @@ export default function Login() {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="userName"
+                label="User Name"
+                name="userName"
+                autoComplete="userName"
                 autoFocus
               />
               <TextField
@@ -101,7 +120,7 @@ export default function Login() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href="/signup" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
