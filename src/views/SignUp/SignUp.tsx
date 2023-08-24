@@ -69,7 +69,7 @@ export default function SignUp() {
 
         checkNull(data.get('username') as string,data.get('password') as string)
 
-       if(!checkNul){ console.log({
+       if(!checkUsername || !checkPwd){ console.log({
             username: data.get('username'),
             email: data.get('email'),
             password: data.get('password'),
@@ -84,15 +84,22 @@ export default function SignUp() {
 
     };
 
-    const [checkNul, setCheckNul] = React.useState<boolean>(false)
+    const [checkUsername, setCheckUserame] = React.useState<boolean>(false)
+    const [checkPwd, setCheckPwd] = React.useState<boolean>(false)
 
     const checkNull = (username: string, pwd: string) => {
-        if (username === '' || pwd === '') {
-            setCheckNul(true)
+        if (username === '' ) {
+            setCheckUserame(true)
         }else{
-            setCheckNul(false)
-
+            setCheckUserame(false)
         }
+
+        if (pwd === '' ) {
+            setCheckPwd(true)
+        }else{
+            setCheckPwd(false)
+        }
+
     }
 
 
@@ -121,8 +128,8 @@ export default function SignUp() {
                                 <TextField
                                     required
                                     fullWidth
-                                    error={checkNul}
-                                    helperText={checkNul ? "Username cannot be null." : ""}
+                                    error={checkUsername}
+                                    helperText={checkUsername ? "Username cannot be null." : ""}
                                     id="username"
                                     label="User Name"
                                     name="username"
@@ -133,8 +140,8 @@ export default function SignUp() {
                                 <TextField
                                     required
                                     fullWidth
-                                    error={checkNul}
-                                    helperText={checkNul ? "Password cannot be null." : ""}
+                                    error={checkPwd}
+                                    helperText={checkPwd ? "Password cannot be null." : ""}
                                     name="password"
                                     label="Password"
                                     type="password"
