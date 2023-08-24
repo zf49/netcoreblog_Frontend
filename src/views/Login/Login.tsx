@@ -35,11 +35,14 @@ export default function Login() {
     let password = data.get('password');
 
 
-    axios.post('http://localhost:5124/api/Login',{
-      'userName': userName,
-      'password': password,
-    }).then(res=>{
+    axios.get(`http://localhost:5124/api/Login?username=${userName}&password=${password}`).then(res=>{
       console.log(res.data)
+
+      navigate('/');
+      
+    }).catch(err=>{
+      console.error("Error logging in:", err);
+        alert("Login failed");
     })
     
 
