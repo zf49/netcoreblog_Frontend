@@ -21,6 +21,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import e from 'express';
+import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 
 function Copyright(props: any) {
@@ -48,7 +50,7 @@ const defaultTheme = createTheme();
 export default function SignUp() {
 
 
-
+    let navigate = useNavigate()
 
     const [gender, setGender] = React.useState('Not to Say');
     const [birthday, setBirthday] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
@@ -63,42 +65,60 @@ export default function SignUp() {
         const data = new FormData(event.currentTarget);
         // data.append('birthday',birthday?.toDate()))
 
-        let bir = birthday?.format('DD/MM/YYYY');
+        let bir = birthday?.toISOString();
         console.log(bir);
         data.append('birthday', bir!)
 
-        checkNull(data.get('username') as string,data.get('password') as string)
+        let check = checkNull(data.get('username') as string,data.get('password') as string)
 
-       if(!checkUsername || !checkPwd){ console.log({
+       if(check === 'yes'){ 
+        console.log({
             username: data.get('username'),
             email: data.get('email'),
             password: data.get('password'),
             gender: data.get('gender'),
             birthday: data.get('birthday')
-        });}else{
+        });
+        
+        axios.post('http://localhost:5124/api/SignUp',{
+            
+                "userName": data.get('username'),
+                "password": data.get('password'),
+                "gender": data.get('gender'),
+                "birthday": data.get('birthday'),
+                "email": data.get('email')
+              
+        }).then((res)=>{
+                console.log(res.data)
+                navigate('/')
+        })
+    
+    }else{
 
             console.log('null')
-        }
+    }
 
 
 
     };
 
-    const [checkUsername, setCheckUserame] = React.useState<boolean>(false)
-    const [checkPwd, setCheckPwd] = React.useState<boolean>(false)
+    const [checkUsername, setCheckUserame] = React.useState<boolean>(true)
+    const [checkPwd, setCheckPwd] = React.useState<boolean>(true)
 
     const checkNull = (username: string, pwd: string) => {
-        if (username === '' ) {
-            setCheckUserame(true)
-        }else{
+        if (username === '' || pwd === '') {
             setCheckUserame(false)
+            setCheckPwd(false)
+
+            return 'no';
+        }else{
+            setCheckUserame(true)
+            setCheckPwd(true)
+
+            return 'yes';
+
         }
 
-        if (pwd === '' ) {
-            setCheckPwd(true)
-        }else{
-            setCheckPwd(false)
-        }
 
     }
 
@@ -128,8 +148,8 @@ export default function SignUp() {
                                 <TextField
                                     required
                                     fullWidth
-                                    error={checkUsername}
-                                    helperText={checkUsername ? "Username cannot be null." : ""}
+                                    error={!checkUsername}
+                                    helperText={!checkUsername ? "Username cannot be null." : ""}
                                     id="username"
                                     label="User Name"
                                     name="username"
@@ -140,8 +160,8 @@ export default function SignUp() {
                                 <TextField
                                     required
                                     fullWidth
-                                    error={checkPwd}
-                                    helperText={checkPwd ? "Password cannot be null." : ""}
+                                    error={!checkPwd}
+                                    helperText={!checkPwd ? "Password cannot be null." : ""}
                                     name="password"
                                     label="Password"
                                     type="password"
