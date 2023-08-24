@@ -20,6 +20,7 @@ import { InputLabel, SelectChangeEvent } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import e from 'express';
 
 
 function Copyright(props: any) {
@@ -47,7 +48,7 @@ const defaultTheme = createTheme();
 export default function SignUp() {
 
 
-   
+
 
     const [gender, setGender] = React.useState('Not to Say');
     const [birthday, setBirthday] = React.useState<Dayjs | null>(dayjs('2022-04-17T15:30'));
@@ -62,19 +63,37 @@ export default function SignUp() {
         const data = new FormData(event.currentTarget);
         // data.append('birthday',birthday?.toDate()))
 
-        let bir = birthday?.toDate();
-        // console.log(bir?.toDateString())
-        // data.append('birthday',bir?.toLocaleDateString())
+        let bir = birthday?.format('DD/MM/YYYY');
+        console.log(bir);
+        data.append('birthday', bir!)
 
-        console.log({
+        checkNull(data.get('username') as string,data.get('password') as string)
+
+       if(!checkNul){ console.log({
             username: data.get('username'),
             email: data.get('email'),
             password: data.get('password'),
             gender: data.get('gender'),
             birthday: data.get('birthday')
-        });
+        });}else{
+
+            console.log('null')
+        }
+
+
 
     };
+
+    const [checkNul, setCheckNul] = React.useState<boolean>(false)
+
+    const checkNull = (username: string, pwd: string) => {
+        if (username === '' || pwd === '') {
+            setCheckNul(true)
+        }else{
+            setCheckNul(false)
+
+        }
+    }
 
 
 
@@ -102,6 +121,8 @@ export default function SignUp() {
                                 <TextField
                                     required
                                     fullWidth
+                                    error={checkNul}
+                                    helperText={checkNul ? "Username cannot be null." : ""}
                                     id="username"
                                     label="User Name"
                                     name="username"
@@ -112,12 +133,15 @@ export default function SignUp() {
                                 <TextField
                                     required
                                     fullWidth
+                                    error={checkNul}
+                                    helperText={checkNul ? "Password cannot be null." : ""}
                                     name="password"
                                     label="Password"
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
                                 />
+
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
@@ -131,7 +155,7 @@ export default function SignUp() {
                             </Grid>
                             <Grid item xs={12}>
                                 <FormControl fullWidth
-                                
+
                                 >
                                     <InputLabel id="demo-simple-select-label">Gender</InputLabel>
                                     <Select
@@ -149,18 +173,18 @@ export default function SignUp() {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12}>
-                            <FormControl fullWidth>
+                                <FormControl fullWidth>
 
-                                <LocalizationProvider dateAdapter={AdapterDayjs}
-                                >
-                                    <DatePicker 
-                                    
-                                      label="Birthday"
-                                      value={birthday}
-                                    //   name="birthday"
-                                      onChange={(birthday) => setBirthday(birthday)}
-                                    />
-                                </LocalizationProvider>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}
+                                    >
+                                        <DatePicker
+
+                                            label="Birthday"
+                                            value={birthday}
+                                            //   name="birthday"
+                                            onChange={(birthday) => setBirthday(birthday)}
+                                        />
+                                    </LocalizationProvider>
                                 </FormControl>
                             </Grid>
                         </Grid>
