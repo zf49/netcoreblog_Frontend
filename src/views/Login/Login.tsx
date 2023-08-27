@@ -37,7 +37,7 @@ export default function Login() {
 
     axios.get(`http://localhost:5124/api/Login?username=${userName}&password=${password}`).then(res=>{
       console.log(res.data)
-
+      localStorage.setItem('token',res.data.token)
       navigate('/');
       
     }).catch(err=>{

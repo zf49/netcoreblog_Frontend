@@ -21,6 +21,14 @@ export default function ButtonAppBar() {
   }
 
 
+  const [isLogin, setIsLogin] = React.useState(false);
+
+  React.useEffect(() => {
+    if(localStorage.getItem('token')){
+        setIsLogin(true)
+    }
+  }, [isLogin])
+  
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -38,9 +46,12 @@ export default function ButtonAppBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             News
           </Typography>
-          <Button color="inherit" onClick={()=>{
+          {!isLogin?<Button color="inherit" onClick={()=>{
             goLoginPage();
-          }}>Login</Button>
+          }}>Login</Button>:<Button color="inherit" onClick={()=>{
+            localStorage.clear();
+            setIsLogin(false)
+          }}>Logout</Button>}
         </Toolbar>
       </AppBar>
     </Box>
